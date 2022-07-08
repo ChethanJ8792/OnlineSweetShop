@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bezkoder.spring.jwt.mongodb.models.ERole;
-import com.bezkoder.spring.jwt.mongodb.models.Role;
-import com.bezkoder.spring.jwt.mongodb.models.User;
-import com.bezkoder.spring.jwt.mongodb.payload.request.LoginRequest;
-import com.bezkoder.spring.jwt.mongodb.payload.request.SignupRequest;
-import com.bezkoder.spring.jwt.mongodb.payload.response.JwtResponse;
-import com.bezkoder.spring.jwt.mongodb.payload.response.MessageResponse;
-import com.bezkoder.spring.jwt.mongodb.repository.RoleRepository;
-import com.bezkoder.spring.jwt.mongodb.repository.UserRepository;
-import com.bezkoder.spring.jwt.mongodb.security.jwt.JwtUtils;
-import com.bezkoder.spring.jwt.mongodb.security.services.UserDetailsImpl;
+import com.capgemini.sweetshop.jwt.mongodb.models.ERole;
+import com.capgemini.sweetshop.jwt.mongodb.models.Role;
+import com.capgemini.sweetshop.jwt.mongodb.models.User;
+import com.capgemini.sweetshop.jwt.mongodb.payload.request.LoginRequest;
+import com.capgemini.sweetshop.jwt.mongodb.payload.request.SignupRequest;
+import com.capgemini.sweetshop.jwt.mongodb.payload.response.JwtResponse;
+import com.capgemini.sweetshop.jwt.mongodb.payload.response.MessageResponse;
+import com.capgemini.sweetshop.jwt.mongodb.repository.RoleRepository;
+import com.capgemini.sweetshop.jwt.mongodb.repository.UserRepository;
+import com.capgemini.sweetshop.jwt.mongodb.security.jwt.JwtUtils;
+import com.capgemini.sweetshop.jwt.mongodb.security.services.UserDetailsImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -59,18 +59,19 @@ public class AuthController {
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
-
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();		
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 
-		return ResponseEntity.ok(new JwtResponse(jwt,
-												 userDetails.getId(),
-												 userDetails.getUsername(),
-												 userDetails.getEmail(),
+		return ResponseEntity.ok(new JwtResponse(jwt, 
+												 userDetails.getId(), 
+												 userDetails.getUsername(), 
+												 userDetails.getEmail(), 
 												 roles));
 	}
+
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -86,7 +87,7 @@ public class AuthController {
 		}
 
 		// Create new user's account
-		User user = new User(signUpRequest.getUsername(),
+		User user = new User(signUpRequest.getUsername(), 
 							 signUpRequest.getEmail(),
 							 encoder.encode(signUpRequest.getPassword()));
 
@@ -104,14 +105,17 @@ public class AuthController {
 					Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(adminRole);
+
 					break;
-			/*	default:
+				
+				default:
 					Role userRole = roleRepository.findByName(ERole.ROLE_USER)
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(userRole);
-				}*/
+				}
 			});
 		}
+
 		user.setRoles(roles);
 		userRepository.save(user);
 
