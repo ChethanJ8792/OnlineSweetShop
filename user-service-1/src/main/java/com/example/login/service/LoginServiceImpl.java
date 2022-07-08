@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.example.login.exception.UserAlreadyExists;
 import com.example.login.exception.UserNotFoundException;
 import com.example.login.model.Login;
 import com.example.login.repository.LoginRepo;
@@ -30,34 +30,23 @@ public class LoginServiceImpl implements LoginService{
 
 	//registering user ->user
 	@Override
-	public String addUser(@RequestBody Login login) throws UserAlreadyExists {
+	public Login addUser(@RequestBody Login login) {
 		log.info("start");
-		Login loginn =new Login();
-		loginn.getId();
-		if(loginn.getId().equals(login.getId()))
-		{
-			throw new UserAlreadyExists("User AlreadyExsits Try with different name "+login.getId());
-		}
-		else
-		{
-			 loginrepo.save(login);
-		}
-		return " User Added succesfully ";
-	}
+		if(login!=null) {
 
+			loginrepo.save(login);
+			System.out.println("user reistered");
+			}
+		return loginrepo.save(login);
+	}
 	//updating user ->user
 	@Override
-	public Login updateUser(@RequestBody Login login,@PathVariable Long id) {
-		return loginrepo.findById(id).map(
-				users->
-				{
-				users.setUsername(users.getUsername());
-				users.setPassword(users.getPassword());
-				return loginrepo.save(users);
-				}).orElseGet(()->{
-			login.setId(id);
-			return loginrepo.save(login);
-		});
+	public ResponseEntity<Login> updateUser(@RequestBody Login login,@PathVariable Long id) throws UserNotFoundException {
+		Login lo=loginrepo.findById(id).orElseThrow(()-> new UserNotFoundException("user not "+id));
+		lo.setPassword(login.getPassword());
+		lo.setId(login.getId());
+		final Login  updatedUser = loginrepo.save(lo);
+		return ResponseEntity.ok(updatedUser);
 	}
 
 	//deleting user ->user
@@ -74,7 +63,7 @@ public class LoginServiceImpl implements LoginService{
 			throw new UserNotFoundException("Id Not Available");
 		}
 		log.info("End");
-		return id+"deleted succesfully";
+		return id+" deleted succesfully";
 
 	}
 

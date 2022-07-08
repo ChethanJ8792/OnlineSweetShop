@@ -1,4 +1,4 @@
-package com.example.login.exception;
+package com.example.login.controller;
 import java.time.LocalDateTime;
 
 
@@ -11,6 +11,8 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.example.login.exception.UserNotFoundException;
 import com.example.login.model.MyErrorResponse;
 
 
@@ -25,7 +27,7 @@ public class GlobalExceptionHandler {
 		error.setTimestamp(LocalDateTime.now());
 		error.setStatus(HttpStatus.NOT_FOUND);
 		error.setMessage(ex.getMessage());
-		error.setReason("Invalid emp id provided....");
+		error.setReason("id doesn't exist....");
 		return new ResponseEntity<MyErrorResponse>(error,HttpStatus.NOT_FOUND);
 	}
 
