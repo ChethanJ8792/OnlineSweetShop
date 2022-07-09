@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import com.capgemini.sweetshop.exception.ProductNotFoundException;
 import com.capgemini.sweetshop.exception.UserNotFoundException;
 import com.capgemini.sweetshop.model.MyErrorResponse;
 
@@ -20,9 +21,20 @@ import com.capgemini.sweetshop.model.MyErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
+	//user class
 	@ExceptionHandler({UserNotFoundException.class})
 	public ResponseEntity<MyErrorResponse> handleProductNotFound(UserNotFoundException ex){
+				MyErrorResponse error=new MyErrorResponse();
+		error.setTimestamp(LocalDateTime.now());
+		error.setStatus(HttpStatus.NOT_FOUND);
+		error.setMessage(ex.getMessage());
+		error.setReason("id doesn't exist....");
+		return new ResponseEntity<MyErrorResponse>(error,HttpStatus.NOT_FOUND);
+	}
+	
+	//product class
+	@ExceptionHandler({ProductNotFoundException.class})
+	public ResponseEntity<MyErrorResponse> handleProductNotFound(ProductNotFoundException ex){
 				MyErrorResponse error=new MyErrorResponse();
 		error.setTimestamp(LocalDateTime.now());
 		error.setStatus(HttpStatus.NOT_FOUND);

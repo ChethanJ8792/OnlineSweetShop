@@ -64,7 +64,7 @@ public class LoginController {
 	}
 
 	@DeleteMapping(path="/users/{id}")
-	public ResponseEntity<Long> deleteUser(@PathVariable Long id) throws UserNotFoundException {
+	public ResponseEntity<String> deleteUser(@PathVariable Long id) throws UserNotFoundException {
 			return loginServiceimpl.deleteUser(id);
 	}
 

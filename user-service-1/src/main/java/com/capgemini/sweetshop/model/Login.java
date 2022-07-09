@@ -1,5 +1,8 @@
 package com.capgemini.sweetshop.model;
 
+import javax.validation.constraints.NotBlank;
+
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,11 +13,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
+@Data
 @Getter
 @Setter
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "login")
 public class Login {
 
@@ -23,7 +27,11 @@ public class Login {
 
 	@Id
 	private long id;
+
+	@NotBlank
 	private String username;//constant
+
+	@NotBlank
 	private String password;
 	// include address,email ,phone number
 	//USER_ROLE //ADMIN_ROLE

@@ -7,5 +7,4 @@ public class NoProperDataException extends Exception{
 	{
 		super(s);
 	}
-
 }
