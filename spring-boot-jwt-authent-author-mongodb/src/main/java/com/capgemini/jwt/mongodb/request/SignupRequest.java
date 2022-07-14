@@ -1,7 +1,6 @@
 package com.capgemini.jwt.mongodb.request;
 
 import java.util.Set;
-
 import javax.validation.constraints.*;
  
 public class SignupRequest {

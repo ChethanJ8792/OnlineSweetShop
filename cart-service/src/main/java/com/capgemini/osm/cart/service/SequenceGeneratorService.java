@@ -38,4 +38,17 @@ public class SequenceGeneratorService {
                         DbSequenceCart.class);
         return !Objects.isNull(pro) ? pro.getSeq() :1;
     }
+    public int getSequenceNumberForProduct(String sequenceName) {
+        //get sequence no
+        Query query = new Query(Criteria.where("id").is(sequenceName));
+        //update the sequence no
+        Update update = new Update().inc("seq",100);
+        //modify in document
+        //login id will start from 50
+        DbSequenceCart pro = mongoOperations
+                .findAndModify(query,
+                        update, options().returnNew(true).upsert(true),
+                        DbSequenceCart.class);
+        return !Objects.isNull(pro) ? pro.getSeq() :1;
+    }
 }

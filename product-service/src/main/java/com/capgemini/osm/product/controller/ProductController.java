@@ -3,6 +3,7 @@ package com.capgemini.osm.product.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,27 +46,35 @@ public class ProductController {
 	
 	@GetMapping("/allproducts")  //users/admin
 	public ResponseEntity<List<Product>> getAllProducts() throws ProductsNotFoundException {
-		return productserviceimpl.getAllProducts();
+		//productserviceimpl.getAllProducts();
+		return new  ResponseEntity<>(productserviceimpl.getAllProducts(),HttpStatus.OK);
 	}
 
-	@GetMapping("/get/{id}")  //admin/users 
-	public ResponseEntity<Product> getProductById(@RequestBody Product product,@PathVariable  Long id) throws ProductNotFoundException {
-		return productserviceimpl.getProductById(product, id);
-	}
+	
+	 //admin/users 
+	  @GetMapping("/getproduct/{id}") 
+	  public ResponseEntity<Product> getProductById(@PathVariable Long id) throws ProductNotFoundException {
+		 Product po= productserviceimpl.getProductById(id);
+		  return ResponseEntity.ok().body(po);
+	  }
+	 
 
 	@PostMapping("/addproduct")  //only admin
 	public ResponseEntity<Product> addProduct(@RequestBody Product product) throws NoProperDataException {
 		product.setId(service.getSequenceNumberForProduct(Product.SEQUENCE_NAME));
-		return productserviceimpl.addProduct(product);
+		 //productserviceimpl.addProduct(product);
+		 return new ResponseEntity<>(productserviceimpl.addProduct(product),HttpStatus.CREATED);
 	}
 
-	@PutMapping("/updateproduct")  //admin only
-	public ResponseEntity<Product> updateProduct(@RequestBody Product product, Long id) throws ProductNotFoundException {
-		return productserviceimpl.updateProduct(product, id);
+	@PutMapping("/updateproduct/{id}")  //admin only @PutMapping("/updateproduct/{id}") 
+	public ResponseEntity<Product> updateProduct(@RequestBody Product product,@PathVariable Long id) throws ProductNotFoundException {
+		;
+		 return ResponseEntity.ok(productserviceimpl.updateProduct(product,id));
 	}
 
-	@DeleteMapping("deleteproduct/{id}")  //only delete
+	@DeleteMapping("/deleteproduct/{id}")  //only delete
 	public ResponseEntity<String> deleteProduct(@PathVariable Long id) throws ProductNotFoundException {
-		return productserviceimpl.deleteProduct(id);
+		 productserviceimpl.deleteProduct(id);
+		 return ResponseEntity.ok(id+" deleted successfully");
 	}
 }

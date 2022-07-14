@@ -1,5 +1,7 @@
 package com.capgemini.osm.product.model;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,19 +18,18 @@ public class Product {
 	 @Transient
 	 public static final String SEQUENCE_NAME = "product_sequence";
 	 
-	 //Pattern p=new Pattern();
 	private long id;
 	
-	//@
+	 @NotBlank
 	private String productname;
 	
-	//@NotBlank
+	 @NotBlank
 	private String productdesc;
 	
-	//@NotBlank
+	 @NotBlank
 	private double price;
 	
-	//@NotBlank
+	 @NotBlank
 	private String  photo_path;
 	
 

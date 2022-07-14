@@ -22,6 +22,8 @@ public class Cart {
 	
 	@Id
 	private long id;
+	
 	private String productcount;//this should come from the product class
+	 
 	private double total;
 }

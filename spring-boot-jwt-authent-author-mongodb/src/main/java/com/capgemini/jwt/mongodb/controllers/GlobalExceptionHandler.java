@@ -8,6 +8,8 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.capgemini.jwt.mongodb.exception.CartNotFoundException;
 import com.capgemini.jwt.mongodb.exception.RoleNotFoundException;
 import com.capgemini.jwt.mongodb.model.MyErrorResponse;
 
@@ -15,7 +17,7 @@ import com.capgemini.jwt.mongodb.model.MyErrorResponse;
 public class GlobalExceptionHandler {
 
 
-	@ExceptionHandler({RoleNotFoundException.class})
+	@ExceptionHandler({RoleNotFoundException.class,CartNotFoundException.class})
 	public ResponseEntity<MyErrorResponse> handleProductNotFound(RoleNotFoundException ex){
 				MyErrorResponse error=new MyErrorResponse();
 		error.setTimestamp(LocalDateTime.now());

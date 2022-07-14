@@ -55,7 +55,6 @@ import com.capgemini.jwt.mongodb.controllers.security.services.
   passwordEncoder(passwordEncoder()); }
   
   @Bean
-  
   @Override public AuthenticationManager authenticationManagerBean() throws
   Exception { return super.authenticationManagerBean(); }
   

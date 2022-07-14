@@ -7,5 +7,4 @@ public class CartNotFoundException extends Exception{
 	{
 		super(t);
 	}
-
 }

@@ -2,6 +2,7 @@
   package com.capgemini.jwt.mongodb.controllers;
   
   import java.util.HashSet; 
+
   import java.util.List; 
   import java.util.Set; 
   import java.util.stream.Collectors; 
@@ -20,6 +21,7 @@
 import org.springframework.web.bind.annotation.RequestMapping; 
 import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.jwt.mongodb.controllers.security.jwt.JwtUtils;
+import com.capgemini.jwt.mongodb.controllers.security.services.SequenceGeneratorService;
 import com.capgemini.jwt.mongodb.controllers.security.services.UserDetailsImpl;
 import com.capgemini.jwt.mongodb.model.ERole; 
 import com.capgemini.jwt.mongodb.model.Role;
@@ -31,7 +33,7 @@ import com.capgemini.jwt.mongodb.request.SignupRequest;
 import com.capgemini.jwt.mongodb.response.JwtResponse; 
 import com.capgemini.jwt.mongodb.response.MessageResponse;
   
-  
+  //modified line no.95
   @CrossOrigin(origins = "*", maxAge = 3600)
   
   @RestController
@@ -54,8 +56,11 @@ import com.capgemini.jwt.mongodb.response.MessageResponse;
   @Autowired
  JwtUtils jwtUtils;
   
-  @PostMapping("/signin") public ResponseEntity<?>
-  authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+  @Autowired
+  SequenceGeneratorService service;
+  
+  @PostMapping("/login") 
+  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
   
   Authentication authentication = authenticationManager.authenticate( new
   UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
@@ -83,28 +88,28 @@ import com.capgemini.jwt.mongodb.response.MessageResponse;
 	  return ResponseEntity .badRequest() .body(new
 	  MessageResponse("Error: Email is already in use!")); 
   }
-  
+ 
   // Create new user's account 
   User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
   encoder.encode(signUpRequest.getPassword()));
+  //user.setId(service.getSequenceNumberForjwtUser(User.SEQUENCE_NAME));
   
   Set<String> strRoles = signUpRequest.getRoles(); Set<Role> roles = new
   HashSet<>();
   
   if (strRoles == null)
   { 
-	  Role userRole =
-  roleRepository.findByName(ERole.ROLE_USER) .orElseThrow(() -> new RuntimeException("Error: Role is not defined.")); roles.add(userRole); } else
-  { strRoles.forEach(role -> { switch (role) { case "admin": Role adminRole =
-  roleRepository.findByName(ERole.ROLE_ADMIN) .orElseThrow(() -> new
-  RuntimeException("Error: Role is not found.")); roles.add(adminRole); break;
-  
-  default: Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-  .orElseThrow(() ->new RuntimeException("Error: Role is not found."));
+	  Role userRole = roleRepository.findByName(ERole.ROLE_USER) .orElseThrow(() -> new RuntimeException("Error: Role is not defined.")); roles.add(userRole); } else
+  { strRoles.forEach(role -> {
+	  switch (role) { 
+	  case "admin": Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN) .orElseThrow(() -> new RuntimeException("Error: Role is not found.")); roles.add(adminRole);
+	 break;
+  default: 
+	  Role userRole = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(() ->new RuntimeException("Error: Role is not found."));
   roles.add(userRole); } }); }
   
   user.setRoles(roles); userRepository.save(user);
   
   return ResponseEntity.ok(new
-  MessageResponse("user  registered successfully!")); } }
+  MessageResponse(" Registered successfully!")); } }
  
