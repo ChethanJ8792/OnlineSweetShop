@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.jwt.mongodb.controllers.security.services.SequenceGeneratorService;
@@ -36,28 +37,28 @@ public class FeignControllerCart {
 	
 	@GetMapping("/cartdata")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<Cart>> showAllDataInCarts() throws CartNotFoundException {//changed here on 12/07/22 ->11:27pm
-		return feignclientutilcart.showAllDataInCarts();
+	public ResponseEntity<List<Cart>> showAllDataInCarts(@RequestHeader("Authorization")  String token) throws CartNotFoundException {//changed here on 12/07/22 ->11:27pm
+		return feignclientutilcart.showAllDataInCarts(token);
 	}
 
 	//only user
 	@PostMapping("/addtocart")  //this data should come from products
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<Cart> addCart(@Valid @RequestBody Cart cart) throws RecordAlreadyExistsException {
+	public ResponseEntity<Cart> addCart(@RequestHeader("Authorization")  String token, @Valid @RequestBody Cart cart) throws RecordAlreadyExistsException {
 		cart.setId(service.getSequenceNumberForCart(Cart.SEQUENCE_NAME));
-		return feignclientutilcart.addCart(cart);
+		return feignclientutilcart.addCart(token, cart);
 	}
 
 	//don't include update cart
 	@PutMapping("/updatecart")
-	public ResponseEntity<Cart> updateCart(@Valid @RequestBody Cart cart) throws CartNotFoundException {
-		return feignclientutilcart.updateCart(cart );
+	public ResponseEntity<Cart> updateCart(@RequestHeader("Authorization")  String token,@Valid @RequestBody Cart cart) throws CartNotFoundException {
+		return feignclientutilcart.updateCart(token, cart );
 	}
 
 	//delete cart -> only user
 	@DeleteMapping("/cancelcart/{id}")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<String> cancelCart(@Valid @PathVariable Long id)  {
-		return feignclientutilcart.cancelCart(id); //this id will come from product
+	public ResponseEntity<String> cancelCart(@RequestHeader("Authorization")  String token,@PathVariable Long id)  throws CartNotFoundException {
+		return feignclientutilcart.cancelCart(token, id); //this id will come from product
 	}
 }
