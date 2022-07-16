@@ -10,22 +10,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.osm.cart.exception.CartNotFoundException;
 import com.capgemini.osm.cart.exception.RecordAlreadyExistsException;
 import com.capgemini.osm.cart.model.Cart;
+import com.capgemini.osm.cart.repository.CartRepo;
 import com.capgemini.osm.cart.service.CartServiceImpl;
 import com.capgemini.osm.cart.service.SequenceGeneratorService;
-//import com.capgemini.osm.cart.util.FeignClientUtilProduct;
-
 import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
 @RequestMapping("/cart-service")
 @Slf4j
-public class CartController {
+public class CartController{
 
 	
 	@Autowired
@@ -34,53 +34,48 @@ public class CartController {
 	@Autowired
 	private SequenceGeneratorService service;
 	
+	@Autowired
+	private CartRepo cartrepo;
+	
 	
 	  //user /admin
 	@GetMapping("/cartdata")
-	public ResponseEntity<List<Cart>> showAllDataInCarts() throws CartNotFoundException {
+	public ResponseEntity<List<Cart>> showAllDataInCarts(@RequestHeader("Authorization")String token) throws CartNotFoundException {
 		//include exception unauthorized also
-		 //cartserviceimpl.showAllDataInCarts();
-	return new  ResponseEntity<>(cartserviceimpl.showAllDataInCarts(),HttpStatus.OK);
+	return new  ResponseEntity<>(cartserviceimpl.showAllDataInCarts(token),HttpStatus.OK);
 	}
-
+	
 	 //only user
 	@PostMapping("/addtocart")  //this data should come from products
-	public ResponseEntity<Cart> addCart(@RequestBody Cart cart ) throws RecordAlreadyExistsException {
+	public ResponseEntity<Cart> addCart(@RequestHeader("Authorization")String token, @RequestBody Cart cart ) throws RecordAlreadyExistsException {
 		cart.setId(service.getSequenceNumberForCart(Cart.SEQUENCE_NAME));
-	 //cartserviceimpl.addCart(cart);//adding product into cart
-	 return new ResponseEntity<>(cartserviceimpl.addCart(cart),HttpStatus.CREATED);
+	 return new ResponseEntity<>(cartserviceimpl.addCart(token, cart),HttpStatus.CREATED);
 	}
 
   //don't include update cart
 	@PutMapping("/updatecart")
-	public ResponseEntity<Cart> updateCart(Cart cart) throws CartNotFoundException {
+	public ResponseEntity<Cart> updateCart(@RequestHeader("Authorization")String token,Cart cart) throws CartNotFoundException {
 		return null;
 	}
-
-	  //delete cart -> only userc
-	@DeleteMapping("/cancelcart/{id}")
-	public ResponseEntity<String> cancelCart(@PathVariable Long id) {
-		int count=1;
-		for(int i=1;i>=count;count++)
-		{
-			if(count==1)
-			{
-			try {
-				cartserviceimpl.cancelCart(id);
-			} catch (CartNotFoundException e) {
-				log.error(e.getMessage());
-			}
-			}
-			else
-			{
-				log.info("id not found");
-			}
-		}
-			//return  ResponseEntity.ok(id+" deleted successfully");
-			return ResponseEntity.ok(" deleted operation done ");
-
-		 //this id will come from product
-		//return ResponseEntity.ok("Delete Operation done");
 	
+	  //delete cart -> only user
+	@DeleteMapping("/cancelcart/{id}")
+	public ResponseEntity<String> cancelCart(@RequestHeader("Authorization")String token,@PathVariable Long id) throws CartNotFoundException {
+		cartserviceimpl.cancelCart(token, id);
+		log.error("Delete operation performed");
+		return ResponseEntity.ok(id+" Deleted Succesfully ");
 	}
+	
+	/*
+	 * @GetMapping("/getproductsbyid/{id}") public ResponseEntity<List<Product>>
+	 * findByProductId(@PathVariable Long id) throws CartNotFoundException {
+	 * //cartserviceimpl.findByIdProductId(id); return new
+	 * ResponseEntity<>(cartserviceimpl.findByIdProductId(id),HttpStatus.OK); }
+	 */
+	/*
+	 * @GetMapping("/getproduct/{id}") public ResponseEntity<Product>
+	 * getProductInCartById(@PathVariable Long id) { //return new
+	 * ResponseEntity<>(cartrepo.getProductInCartById(id),HttpStatus.CREATED);
+	 * return cartrepo.getProductInCartById(id); }
+	 */
 }

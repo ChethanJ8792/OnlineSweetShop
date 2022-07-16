@@ -2,6 +2,9 @@ package com.capgemini.osm.cart.model;
 
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -21,7 +24,17 @@ public class Cart {
 
 	@Id
 	private long id;
+	
+	@NotBlank
+	 @Size(max = 100)
 	private List<Product> product;
-	private String productcount;//this should come from the product class
+	
+	@NotBlank
+	 @Size(max = 100)
+	private String productcount;
+	//this should come from the product class implement this part in UI
+	
+	@NotBlank
+	 @Size(max = 100)
 	private double total;
 }

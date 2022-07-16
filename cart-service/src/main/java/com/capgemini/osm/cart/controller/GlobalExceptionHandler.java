@@ -22,7 +22,7 @@ import com.capgemini.osm.cart.model.MyErrorResponse;
 public class GlobalExceptionHandler {
 
 
-	@ExceptionHandler({RoleNotFoundException.class,CartNotFoundException.class})
+	@ExceptionHandler({RoleNotFoundException.class})
 	public ResponseEntity<MyErrorResponse> handleProductNotFound(RoleNotFoundException ex){
 				MyErrorResponse error=new MyErrorResponse();
 		error.setTimestamp(LocalDateTime.now());
@@ -31,7 +31,18 @@ public class GlobalExceptionHandler {
 		error.setReason("id doesn't exist....");
 		return new ResponseEntity<MyErrorResponse>(error,HttpStatus.NOT_FOUND);
 	}
-
+	
+	//this method is responsible for handling all the internal server errors from class cartnptfoundexception
+	@ExceptionHandler({CartNotFoundException.class})
+	public ResponseEntity<MyErrorResponse> handleCartIdNotFound(CartNotFoundException cart){
+				MyErrorResponse error=new MyErrorResponse();
+		error.setTimestamp(LocalDateTime.now());
+		error.setStatus(HttpStatus.NOT_FOUND);
+		error.setMessage(cart.getMessage());
+		error.setReason("id doesn't exist....");
+		return new ResponseEntity<MyErrorResponse>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 
 	@ExceptionHandler({MethodArgumentTypeMismatchException.class})
 	public ResponseEntity<MyErrorResponse> handleBadRequest(MethodArgumentTypeMismatchException ex){

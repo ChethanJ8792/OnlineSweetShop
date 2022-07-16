@@ -44,7 +44,7 @@ public class SequenceGeneratorService {
         //update the sequence no
         Update update = new Update().inc("seq",100);
         //modify in document
-        //login id will start from 50
+        //login id will start from 100
         DbSequenceCart pro = mongoOperations
                 .findAndModify(query,
                         update, options().returnNew(true).upsert(true),

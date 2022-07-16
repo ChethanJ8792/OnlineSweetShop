@@ -1,11 +1,7 @@
 package com.capgemini.osm.cart.service;
 
 import java.util.ArrayList;
-
-
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.capgemini.osm.cart.exception.CartNotFoundException;
@@ -22,7 +18,7 @@ public class CartServiceImpl implements CartService{
 	private CartRepo cartrepo;
 
 	@Override //user/admin
-	public List<Cart> showAllDataInCarts() throws CartNotFoundException {
+	public List<Cart> showAllDataInCarts(String token) throws CartNotFoundException {
 			List<Cart> cartproducts =new ArrayList<>();
 			cartproducts =cartrepo.findAll();
 			try {
@@ -34,20 +30,18 @@ public class CartServiceImpl implements CartService{
 				log.error(e.getMessage());
 			}
 		return cartproducts;
-				// new  ResponseEntity<>(cartrepo.findAll(),HttpStatus.OK);
 	}
 
 	@Override   //only user
-	public Cart addCart(Cart cart) throws RecordAlreadyExistsException {
+	public Cart addCart(String token,Cart cart) throws RecordAlreadyExistsException {
 		Cart bean=cartrepo.save(cart);
 		log.debug("added to cart successfully ");
 		return bean;
-				//new ResponseEntity<>(bean,HttpStatus.CREATED);
 	}
 
 
 	@Override    //only user
-	public String cancelCart(Long id) throws CartNotFoundException {
+	public String cancelCart(String token,Long id) throws CartNotFoundException {
 		log.info("delete by id");
 		var deleted=cartrepo.findById(id);
 		if(deleted.isPresent())
@@ -60,13 +54,17 @@ public class CartServiceImpl implements CartService{
 		{
 			throw new CartNotFoundException("id not available to delete");
 		}
-		//ResponseEntity.ok(id+" deleted successfully");
 	}
+	
 	@Override
-	public Cart updateCart(Cart cart) throws CartNotFoundException {
+	public Cart updateCart(String token,Cart cart) throws CartNotFoundException {
 		return null;
 	}
 
+	/*
+	 * @Override public List<Product> findByIdProductId(Long id) throws
+	 * CartNotFoundException { return cartrepo.findByProductId(id); }
+	 */
 
 
 }
