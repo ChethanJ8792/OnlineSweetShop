@@ -1,26 +1,21 @@
 package com.capgemini.osm.product.controller;
 import java.time.LocalDateTime;
-
-
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import javax.management.relation.RoleNotFoundException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
+import com.capgemini.osm.product.exception.NoProperDataException;
 import com.capgemini.osm.product.exception.ProductsNotFoundException;
 import com.capgemini.osm.product.model.MyErrorResponse;
 
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
 
 	@ExceptionHandler({RoleNotFoundException.class,ProductsNotFoundException.class})
 	public ResponseEntity<MyErrorResponse> handleProductNotFound(RoleNotFoundException ex){
@@ -31,7 +26,17 @@ public class GlobalExceptionHandler {
 		error.setReason("id doesn't exist....");
 		return new ResponseEntity<MyErrorResponse>(error,HttpStatus.NOT_FOUND);
 	}
-
+	
+	
+	@ExceptionHandler({NoProperDataException.class})
+	public ResponseEntity<MyErrorResponse> ProductDataNotFound(NoProperDataException ex){
+				MyErrorResponse error=new MyErrorResponse();
+		error.setTimestamp(LocalDateTime.now());
+		error.setStatus(HttpStatus.NOT_ACCEPTABLE);
+		error.setMessage(ex.getMessage());
+		error.setReason("please fill all fields....");
+		return new ResponseEntity<MyErrorResponse>(error,HttpStatus.NOT_ACCEPTABLE);
+	}
 
 	@ExceptionHandler({MethodArgumentTypeMismatchException.class})
 	public ResponseEntity<MyErrorResponse> handleBadRequest(MethodArgumentTypeMismatchException ex){
@@ -42,7 +47,6 @@ public class GlobalExceptionHandler {
 		error.setReason("Wrong url/method typed ....");
 		return new ResponseEntity<MyErrorResponse>(error,HttpStatus.BAD_REQUEST);
 	}
-
 
 	@ExceptionHandler({HttpRequestMethodNotSupportedException.class})
 	public ResponseEntity<MyErrorResponse> handleMethodNotSupportException(HttpRequestMethodNotSupportedException ex){

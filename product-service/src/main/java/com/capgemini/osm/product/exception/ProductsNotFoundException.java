@@ -4,7 +4,7 @@ package com.capgemini.osm.product.exception;
 public class ProductsNotFoundException extends Exception{
 	public  ProductsNotFoundException(String ss)
 	{
-		super();
+		super(ss);
 	}
 
 }
