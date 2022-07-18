@@ -49,14 +49,14 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<MyErrorResponse>(error,HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
-	@ExceptionHandler({Exception.class})
-	public ResponseEntity<Object> handleException(Exception ex){
-			Map<String,Object> body=new LinkedHashMap<String, Object>();
-		body.put("timestamp",LocalDateTime.now());
-		body.put("Status",HttpStatus.NOT_ACCEPTABLE);
-		body.put("Message",ex.getMessage());
-		body.put("Reason","Wrong url typed....");
-		return new ResponseEntity<Object>(body,HttpStatus.NOT_ACCEPTABLE);
-	}
+	
+	  @ExceptionHandler({Exception.class}) public ResponseEntity<Object>
+	  handleException(Exception ex){ Map<String,Object> body=new
+	  LinkedHashMap<String, Object>(); body.put("timestamp",LocalDateTime.now());
+	  body.put("Status",HttpStatus.NOT_ACCEPTABLE);
+	  body.put("Message",ex.getMessage());
+	  body.put("Reason","Wrong url typed...."); return new
+	  ResponseEntity<Object>(body,HttpStatus.NOT_ACCEPTABLE); }
+	 
 }
 

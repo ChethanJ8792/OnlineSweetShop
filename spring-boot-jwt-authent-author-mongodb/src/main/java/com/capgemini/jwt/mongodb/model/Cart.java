@@ -1,6 +1,8 @@
 package com.capgemini.jwt.mongodb.model;
 
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
@@ -26,6 +28,8 @@ public class Cart {
 	@NotBlank
 	@Size(max = 100)
 	private String productcount;//this should come from the product class
-
+	
+	@Size(max = 300)
+	private List<Product> product;
 	private double total;
 }

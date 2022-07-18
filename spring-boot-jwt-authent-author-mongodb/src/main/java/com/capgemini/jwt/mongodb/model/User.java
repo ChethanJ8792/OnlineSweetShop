@@ -15,8 +15,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
 	
 	
-  @Id
-  private String id;
+  public static final String SEQUENCE_NAME = "user_sequence";
+
+@Id
+  private long id;
 
   @NotBlank
   @Size(max = 20)
@@ -30,6 +32,8 @@ public class User {
   @NotBlank
   @Size(max = 120)
   private String password;
+  
+  private String authToken;
 
   @DBRef
   private Set<Role> role = new HashSet<>(); //Accepts multiple parameters
@@ -37,17 +41,34 @@ public class User {
   public User() {
   }
 
-  public User(String username, String email, String password) {
+  public User(String username, String email, String password,String authToken) {
     this.username = username;
     this.email = email;
     this.password = password;
+    this.authToken=authToken;
   }
 
-  public String getId() {
+  public String getAuthToken() {
+	return authToken;
+}
+
+public void setAuthToken(String authToken) {
+	this.authToken = authToken;
+}
+
+public Set<Role> getRole() {
+	return role;
+}
+
+public void setRole(Set<Role> role) {
+	this.role = role;
+}
+
+public long getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(long id) {
     this.id = id;
   }
 

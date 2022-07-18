@@ -1,6 +1,9 @@
 package com.capgemini.osm.cart.controller;
 
 import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +17,16 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.osm.cart.exception.CartNotFoundException;
+import com.capgemini.osm.cart.exception.InValidTokenException;
+import com.capgemini.osm.cart.exception.NoProperDataException;
+import com.capgemini.osm.cart.exception.ProductsNotFoundException;
 import com.capgemini.osm.cart.exception.RecordAlreadyExistsException;
 import com.capgemini.osm.cart.model.Cart;
-import com.capgemini.osm.cart.repository.CartRepo;
+import com.capgemini.osm.cart.model.Product;
 import com.capgemini.osm.cart.service.CartServiceImpl;
 import com.capgemini.osm.cart.service.SequenceGeneratorService;
+import com.capgemini.osm.cart.util.FeignClientUtilProduct2;
+
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -34,48 +42,83 @@ public class CartController{
 	@Autowired
 	private SequenceGeneratorService service;
 	
+	
 	@Autowired
-	private CartRepo cartrepo;
-	
-	
+	FeignClientUtilProduct2 feignClientUtil;
+
 	  //user /admin
 	@GetMapping("/cartdata")
-	public ResponseEntity<List<Cart>> showAllDataInCarts(@RequestHeader("Authorization")String token) throws CartNotFoundException {
+	public ResponseEntity<List<Cart>> showAllDataInCarts( @RequestHeader("Authorization")String token) throws CartNotFoundException ,InValidTokenException {
 		//include exception unauthorized also
-	return new  ResponseEntity<>(cartserviceimpl.showAllDataInCarts(token),HttpStatus.OK);
+		List<Cart> cart=cartserviceimpl.showAllDataInCarts(token);
+		log.info("starting  of get mapping");
+		if(cart.size()>0)
+		{
+			return new  ResponseEntity<>(cartserviceimpl.showAllDataInCarts(token),HttpStatus.OK);
+		}
+		else
+		{
+			log.debug("Cart is empty {}",cart);
+			return new  ResponseEntity<>(cart,HttpStatus.NO_CONTENT); 
+		}
 	}
+	/*
+	 * @PostMapping("/addplanters") 
+	public ResponseEntity<Planter> addPlanter(@Valid @RequestBody Planter pdto)  throws NoProperDataException
+	{	
+		if(pdto!=null) 
+		{	
+			pdto.setPlanterId(service.getSequenceNumberForPlanter(Planter.SEQUENCE_NAME));
+			planterServiceimpl.addPlanter(pdto);
+			log.error("added planter");
+			return new ResponseEntity<>(pdto,HttpStatus.CREATED);			
+		}
+		else
+		{
+			throw new NoProperDataException("Please fill fields");
+			
+		}	
+	}
+
+	 */
 	
 	 //only user
 	@PostMapping("/addtocart")  //this data should come from products
-	public ResponseEntity<Cart> addCart(@RequestHeader("Authorization")String token, @RequestBody Cart cart ) throws RecordAlreadyExistsException {
-		cart.setId(service.getSequenceNumberForCart(Cart.SEQUENCE_NAME));
-	 return new ResponseEntity<>(cartserviceimpl.addCart(token, cart),HttpStatus.CREATED);
+	public ResponseEntity<Cart> addCart(@RequestHeader("Authorization")String token, @RequestBody Cart cart ) throws RecordAlreadyExistsException, NoProperDataException {
+		if(cart!=null)
+		{
+			cart.setId(service.getSequenceNumberForCart(Cart.SEQUENCE_NAME));
+			cartserviceimpl.addCart(token, cart);
+			log.info(" Added to cart ");
+			return new ResponseEntity<>(cart,HttpStatus.CREATED);
+		}
+		else
+		{
+			throw new NoProperDataException("Please fill all the fields");
+		} 
 	}
 
   //don't include update cart
 	@PutMapping("/updatecart")
-	public ResponseEntity<Cart> updateCart(@RequestHeader("Authorization")String token,Cart cart) throws CartNotFoundException {
+	public ResponseEntity<Cart> updateCart(@RequestHeader("Authorization")String token, Cart cart) throws CartNotFoundException {
 		return null;
 	}
 	
 	  //delete cart -> only user
 	@DeleteMapping("/cancelcart/{id}")
-	public ResponseEntity<String> cancelCart(@RequestHeader("Authorization")String token,@PathVariable Long id) throws CartNotFoundException {
+	public ResponseEntity<String> cancelCart(@RequestHeader("Authorization")String token,@Valid @PathVariable Long id) throws CartNotFoundException {
 		cartserviceimpl.cancelCart(token, id);
 		log.error("Delete operation performed");
 		return ResponseEntity.ok(id+" Deleted Succesfully ");
 	}
+	/*
+	 * 
+	 */
 	
-	/*
-	 * @GetMapping("/getproductsbyid/{id}") public ResponseEntity<List<Product>>
-	 * findByProductId(@PathVariable Long id) throws CartNotFoundException {
-	 * //cartserviceimpl.findByIdProductId(id); return new
-	 * ResponseEntity<>(cartserviceimpl.findByIdProductId(id),HttpStatus.OK); }
-	 */
-	/*
-	 * @GetMapping("/getproduct/{id}") public ResponseEntity<Product>
-	 * getProductInCartById(@PathVariable Long id) { //return new
-	 * ResponseEntity<>(cartrepo.getProductInCartById(id),HttpStatus.CREATED);
-	 * return cartrepo.getProductInCartById(id); }
-	 */
+	  @GetMapping("/getproductsbyid/{id}") 
+	  public ResponseEntity<Product> findByProductId(@RequestHeader("Authorization")String token,@PathVariable Long id) throws CartNotFoundException, ProductsNotFoundException {
+	  //cartserviceimpl.findByIdProductId(id); return new
+	  ResponseEntity<Product> product=feignClientUtil.getProductById(token, id);
+	  return product;
+	  }
 }

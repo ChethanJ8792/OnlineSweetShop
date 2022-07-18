@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import com.capgemini.jwt.mongodb.model.Product;
 
   @FeignClient(value = "product-service",url="http://localhost:8087/product-service") 
+  //implement this in application.properties
   public interface FeignClientUtilProduct {
   
   @GetMapping("/allproducts") 

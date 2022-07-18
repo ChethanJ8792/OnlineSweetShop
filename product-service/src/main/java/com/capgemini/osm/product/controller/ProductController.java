@@ -21,6 +21,7 @@ import com.capgemini.osm.product.exception.ProductsNotFoundException;
 import com.capgemini.osm.product.model.Product;
 import com.capgemini.osm.product.service.ProductServiceImpl;
 import com.capgemini.osm.product.service.SequenceGeneratorService;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**compulsory @PATHVariable and @REQUESTBODY is required for getbyId and deleteById
@@ -29,6 +30,7 @@ import com.capgemini.osm.product.service.SequenceGeneratorService;
  */
 @RestController
 @RequestMapping("/product-service")
+@Slf4j
 public class ProductController {
 	
 
@@ -44,14 +46,26 @@ public class ProductController {
 	@GetMapping("/allproducts")  //users/admin
 	//include preAuthorize include here also  call preauthorize method here 
 	public ResponseEntity<List<Product>> getAllProducts(@RequestHeader("Authorization") String token) throws ProductsNotFoundException {
-		return new  ResponseEntity<>(productserviceimpl.getAllProducts(token),HttpStatus.OK);
+		List<Product> product =productserviceimpl.getAllProducts(token);
+		if(product.size()>0)
+		{
+			log.debug("products are {}"+ product);
+		 return new  ResponseEntity<>(product,HttpStatus.OK); 
+		}
+		return new  ResponseEntity<>(product,HttpStatus.NO_CONTENT);
 	}
-
-	 //admin/users 
+	
+	//admin/users 
 	  @GetMapping("/getproduct/{id}") 
 	  public ResponseEntity<Product> getProductById(@RequestHeader("Authorization")  String token,@Valid @PathVariable Long id) throws ProductNotFoundException {
-		 Product po= productserviceimpl.getProductById(token, id);
-		  return ResponseEntity.ok().body(po);
+		 Product product= productserviceimpl.getProductById(token, id);
+		 if(product!=null)
+		 {
+			 return ResponseEntity.ok().body(product);
+		 }
+		 else {
+				return new   ResponseEntity<Product>(product,HttpStatus.NOT_FOUND);
+			  }	  
 	  }
 	 
 	@PostMapping("/addproduct")  //only admin
@@ -62,7 +76,6 @@ public class ProductController {
 
 	@PutMapping("/updateproduct/{id}")  //admin only @PutMapping("/updateproduct/{id}") 
 	public ResponseEntity<Product> updateProduct(@RequestHeader("Authorization")  String token,@Valid @RequestBody Product product,@PathVariable Long id) throws ProductNotFoundException {
-
 		 return ResponseEntity.ok(productserviceimpl.updateProduct(token, product,id));
 	}
 

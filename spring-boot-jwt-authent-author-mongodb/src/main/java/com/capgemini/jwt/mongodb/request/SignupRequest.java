@@ -3,6 +3,8 @@ package com.capgemini.jwt.mongodb.request;
 import java.util.Set;
 import javax.validation.constraints.*;
  
+
+//added getters add setters for authToken 
 public class SignupRequest {
     @NotBlank
     @Size(min = 3, max = 20)
@@ -22,12 +24,21 @@ public class SignupRequest {
     public String getUsername() {
         return username;
     }
+    private String authToken;
  
     public void setUsername(String username) {
         this.username = username;
     }
  
-    public String getEmail() {
+    public String getAuthToken() {
+		return authToken;
+	}
+
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
+	}
+
+	public String getEmail() {
         return email;
     }
  
