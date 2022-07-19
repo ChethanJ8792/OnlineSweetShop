@@ -4,7 +4,7 @@ import { Nav, Navbar, NavDropdown,  Button, Form, Container, FormControl } from 
 import IMAGE8 from '../Images/image8.jpg';
 import IMAGE9 from '../Images/image9.jpg';
 import { useLocation } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.css';
+import  bootstrap from 'bootstrap/dist/css/bootstrap.css';
 
 
 

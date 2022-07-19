@@ -2,11 +2,13 @@ package com.capgemini.osm.cart.controller;
 
 import java.util.List;
 
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,20 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.osm.cart.exception.CartNotFoundException;
 import com.capgemini.osm.cart.exception.InValidTokenException;
 import com.capgemini.osm.cart.exception.NoProperDataException;
-import com.capgemini.osm.cart.exception.ProductsNotFoundException;
 import com.capgemini.osm.cart.exception.RecordAlreadyExistsException;
 import com.capgemini.osm.cart.model.Cart;
-import com.capgemini.osm.cart.model.Product;
 import com.capgemini.osm.cart.service.CartServiceImpl;
 import com.capgemini.osm.cart.service.SequenceGeneratorService;
-import com.capgemini.osm.cart.util.FeignClientUtilProduct2;
-
 import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
 @RequestMapping("/cart-service")
 @Slf4j
+@CrossOrigin(value = "http://localhost:3000")
 public class CartController{
 
 	
@@ -43,8 +42,8 @@ public class CartController{
 	private SequenceGeneratorService service;
 	
 	
-	@Autowired
-	FeignClientUtilProduct2 feignClientUtil;
+//	@Autowired
+//	FeignClientUtilProduct2 feignClientUtil;
 
 	  //user /admin
 	@GetMapping("/cartdata")
@@ -62,25 +61,6 @@ public class CartController{
 			return new  ResponseEntity<>(cart,HttpStatus.NO_CONTENT); 
 		}
 	}
-	/*
-	 * @PostMapping("/addplanters") 
-	public ResponseEntity<Planter> addPlanter(@Valid @RequestBody Planter pdto)  throws NoProperDataException
-	{	
-		if(pdto!=null) 
-		{	
-			pdto.setPlanterId(service.getSequenceNumberForPlanter(Planter.SEQUENCE_NAME));
-			planterServiceimpl.addPlanter(pdto);
-			log.error("added planter");
-			return new ResponseEntity<>(pdto,HttpStatus.CREATED);			
-		}
-		else
-		{
-			throw new NoProperDataException("Please fill fields");
-			
-		}	
-	}
-
-	 */
 	
 	 //only user
 	@PostMapping("/addtocart")  //this data should come from products
@@ -111,14 +91,5 @@ public class CartController{
 		log.error("Delete operation performed");
 		return ResponseEntity.ok(id+" Deleted Succesfully ");
 	}
-	/*
-	 * 
-	 */
 	
-	  @GetMapping("/getproductsbyid/{id}") 
-	  public ResponseEntity<Product> findByProductId(@RequestHeader("Authorization")String token,@PathVariable Long id) throws CartNotFoundException, ProductsNotFoundException {
-	  //cartserviceimpl.findByIdProductId(id); return new
-	  ResponseEntity<Product> product=feignClientUtil.getProductById(token, id);
-	  return product;
-	  }
 }

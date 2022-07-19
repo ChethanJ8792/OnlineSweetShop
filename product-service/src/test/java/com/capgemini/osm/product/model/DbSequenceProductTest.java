@@ -38,28 +38,15 @@ class DbSequenceProductTest {
 		dbSequenceProduct.setId("100");
 		assertEquals("100",dbSequenceProduct.getId());
 	}
-	/*
-	 * @Test
-	void setProductNameTest() {
-		product.setProductname("A2B");
-		assertEquals("A2B",product.getProductname());
+	
+	@Test
+	public void defaultConstructorTest()
+	{
+		DbSequenceProduct dbs=new DbSequenceProduct();
+		DbSequenceProduct dbs1=new DbSequenceProduct();
+		assertNotSame(dbs, dbs1);
 	}
-	 */
 }
-/*
-	 * Product product;
-	@BeforeEach
-	public void before() {
-		product = new Product(100,"abc","delicious",445.21,"gfiygiyegynh.com");
-	}
-		
-	@Test
-	void getProducdByIdTest() {
-		assertEquals(100, product.getId());
-	}
-
-	@Test
-	void getProductNameTest() {
-		assertEquals("abc",product.getProductname());
-	}
-	 */
+	
+	 
+	

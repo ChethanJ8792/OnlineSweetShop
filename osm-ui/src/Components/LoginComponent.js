@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import UserService from "../Services/UserService";
 
-export function LoginComponents() {
+export function LoginComponent() {
 
  // to add state to functional component
   const [errorMessages, setErrorMessages] = useState({});
@@ -27,8 +27,6 @@ export function LoginComponents() {
     pass: "invalid  password"
 
   };
-
-
   const handleSubmit = (event) => {
     //Prevent page reload
     event.preventDefault();
@@ -44,10 +42,10 @@ export function LoginComponents() {
     var userData1 = '';
 
     if (userData) {
-      if (userData.password !== pass.value) {
+      if (userData.password == pass.value) {
         setErrorMessages({ name: "pass", message: errors.pass });
       } else {
-        if (userData.type == 'Admin') {
+        if (userData.role == 'Admin') {
           setIsSubmitted(true);
           userData1 = history.push({
             pathname: '/adminhome',     // to push data to admin
@@ -78,7 +76,7 @@ export function LoginComponents() {
   const history = useHistory();
   //code for login form
   const renderForm = (
-    <div className="form">
+    <div className="form container">
       <form onSubmit={handleSubmit}>
         <div className="input-container">
           <label>Username </label>
@@ -109,7 +107,5 @@ export function LoginComponents() {
       </div>
     </div>
   );
-
 }
-export default LoginComponents;
-
+export default LoginComponent;

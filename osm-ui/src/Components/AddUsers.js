@@ -8,9 +8,9 @@ const AddUsers = () => {
     //to add state into functional component
     const [username, setUserName] = useState('')
     const [password, setPassword] = useState('')
-    const [passwordConfirm, setPasswordConfirm] = useState('')
+   // const [passwordConfirm, setPasswordConfirm] = useState('')
     const [email, setEmail] = useState('')
-    const [type, setType] = useState("Customer","Admin")
+    const [role, setRole] = useState("User","Admin")
     const history = useHistory();
     const [database, setDatabase] = useState([]);
 
@@ -32,11 +32,11 @@ const AddUsers = () => {
         if (validuser) {
             alert('User Name already Available')
             history.push('/Register')
-        } else if (password !== passwordConfirm) {
-            alert("Password doesn't match")
+        } else if (password == null) {
+            alert("Password  is null ")
             history.push('/Register')
         } else {
-            const user = { username, password, passwordConfirm, email, type }
+            const user = { username, password, email,role }
             UserService.addUser(user).then((response) => {
                 console.log(response.data)
                 history.push('/login')
@@ -51,12 +51,12 @@ const AddUsers = () => {
         <div className="container">
             <h1>Create Account</h1>
             <div className="row">
-                <div className="card bg-dark text-white">
-                    <h2 className="text-center">Sign Up</h2>
+                <div className="card bg-dark text-green">
+                    <h2 className="text-center text-light">Sign Up</h2>
                     <div className="card-body">
                         <form onSubmit={(e) => saveUser(e)}>
                             <div className="form-group mb-2">
-                                <label className="form-label">User Name :</label>
+                                <label className="form-label text-light">User Name :</label>
                                 <input
                                     type="text"
                                     placeholder="enter the username"
@@ -66,7 +66,7 @@ const AddUsers = () => {
                                     onChange={(e) => setUserName(e.target.value)}
                                     required
                                 />
-                                <label className="form-label">Password :</label>
+                                <label className="form-label text-light">Password :</label>
                                 <input
                                     type="password"
                                     placeholder="enter the password"
@@ -76,7 +76,7 @@ const AddUsers = () => {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
-                                <label className="form-label">Password Confirm:</label>
+                                {/* <label className="form-label">Password Confirm:</label>
                                 <input
                                     type="password"
                                     placeholder="Re-enter the password"
@@ -85,8 +85,8 @@ const AddUsers = () => {
                                     value={passwordConfirm}
                                     onChange={(e) => setPasswordConfirm(e.target.value)}
                                     required
-                                />
-                                <label className="form-label">Email :</label>
+                                /> */}
+                                <label className="form-label text-light">Email :</label>
                                 <input
                                     type="email"
                                     placeholder="enter the email"
@@ -96,9 +96,9 @@ const AddUsers = () => {
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
                                 />
-                                <label className="form-label">Type of User :</label>
-                                <select name="type" id="" className='form-control' onChange={(e) => setType(e.target.value)} >
-                                    <option  value="Customer"  >Customer</option>
+                                <label className="form-label text-light">Type of User:</label>
+                                <select name="type" id="" className='form-control' onChange={(e) => setRole(e.target.value)} >
+                                    <option  value="User"  >Customer</option>
                                     <option value="Admin" >Admin</option>
                                 </select>
                              

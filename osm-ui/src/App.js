@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+
 import './App.css';
 import HeaderComponent from './Components/HeaderComponent';
 import LoginComponent from './Components/LoginComponent';
@@ -8,6 +8,8 @@ import AddUsers from './Components/AddUsers';
 import ListUserComponent from './Components/ListUserComponent';
 import ProductsComponent from './Components/ProductsComponent';
 import AdminProduct from './Components/AdminProduct';
+import {BrowserRouter as Router,Route,Switch } from 'react-router-dom';
+import FooterComponent from './Components/FooterComponent';
 
 function App() {
   {

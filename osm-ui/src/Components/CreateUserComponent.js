@@ -11,35 +11,33 @@ export class CreateUserComponent extends Component{
         this.state={
                 username:'',
                 password:'',
-                passwordConfirm:'',
                 email:'',
-                type:''
+                role:''
          }
          this.changeUserNameHandler=this.changeUserNameHandler.bind(this)
          this.changePasswordHandler=this.changePasswordHandler.bind(this)
-         this.changePasswordConfirmHandle=this.changePasswordConfirmHandle.bind(this)
+         //this.changePasswordConfirmHandle=this.changePasswordConfirmHandle.bind(this)
          this.changeEmailHandler=this.changeEmailHandler.bind(this)
-         this.changeTypeHandler=this.changeTypeHandler.bind(this)
+         this.changeRoleHandler=this.changeRoleHandler.bind(this)
      }
      saveUser=(e)=>{
         e.preventDefault()
         let user={
             username:this.state.username,
             password:this.state.password,
-            passwordConfirm:this.state.passwordConfirm,
+            // passwordConfirm:this.state.passwordConfirm,
             email:this.state.email,
-            type:this.state.type
+            type:this.state.role
         }
          console.log('user =>'+JSON.stringify(user))
-         if(this.state.password !== this.state.passwordConfirm){
+         if(this.state.password == null){
              alert('Password mismatch')
             this.props.history.push('/addUser')
          }else{
             UserService.addUser(user).then( (response) =>{
                 this.props.history.push('/login')
             })
-         }
-         
+         } 
     }
    
    
@@ -50,17 +48,17 @@ export class CreateUserComponent extends Component{
         changePasswordHandler(event){
             this.setState({password: event.target.value})
         }
-        changePasswordConfirmHandle(event){
-            this.setState({passwordConfirm: event.target.value})
-            // if(event.changePasswordConfirmHandle !==event.changePasswordHandler){
-            //     message.error("password don't match")
-            // }
-        }
+        // changePasswordConfirmHandle(event){
+        //     this.setState({passwordConfirm: event.target.value})
+        //     // if(event.changePasswordConfirmHandle !==event.changePasswordHandler){
+        //     //     message.error("password don't match")
+        //     // }
+        // }
         changeEmailHandler(event){
             this.setState({email: event.target.value})
         }
-        changeTypeHandler(event){
-            this.setState({type: event.target.value})
+        changeRoleHandler(event){
+            this.setState({role: event.target.value})
         }
         cancel(){
                     this.props.history.push('/login')
@@ -93,12 +91,12 @@ export class CreateUserComponent extends Component{
                                         <input placeholder='Email' name='email' className='form-control' value={this.state.email} onChange={this.changeEmailHandler} required/>
                                     </div>
                                     <div className='form-group'>
-                                        <label>Type</label>
-                                        <select name="type" id="" className='form-control' onChange={this.changeTypeHandler} >
-                                            <option  value="User" onChange={this.changeTypeHandler }>User</option>
-                                            <option value="Admin"onChange={this.changeTypeHandler}>Admin</option>
+                                        <label>Role</label>
+                                        <select name="type" id="" className='form-control' onChange={this.changeRoleHandler} >
+                                            <option  value="User" onChange={this.changeRoleHandler }>User</option>
+                                            <option value="Admin"onChange={this.changeRoleHandler}>Admin</option>
                                         </select>
-                                        {/* <input placeholder='Type' name='email' className='form-control' value={this.state.type} onChange={this.changeTypeHandler}/> */}
+                                        <input placeholder='Type' name='email' className='form-control' value={this.state.role} onChange={this.changeRoleHandler}/>
                                         
                                     </div><br/>
                                     <input type="submit" value="Submit" className='btn btn-success' />

@@ -13,7 +13,7 @@ import com.capgemini.osm.cart.model.LoginRequest;
 import com.capgemini.osm.cart.model.SignupRequest;
 
 
-@FeignClient(name = "spring-boot-jwt-authent-author-mongodb",url="${client.post.baseUrll}") //url="${client.post.baseUrll}"
+@FeignClient(name = "spring-boot-jwt-authent-author-mongodb",url="${client.post.baseUrl1}") //url="${client.post.baseUrll}" client.post.baseUrll=http://localhost:8084/api/auth
 public interface AuthFeign {
 	
 	 @GetMapping("/validate")
@@ -23,5 +23,4 @@ public interface AuthFeign {
 
 	  @PostMapping("/signup") 
 	  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest);
-
 }

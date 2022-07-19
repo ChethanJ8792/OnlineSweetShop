@@ -1,16 +1,19 @@
 package com.capgemini.osm.cart.model;
 
 import javax.validation.constraints.NotBlank;
+
 import javax.validation.constraints.Size;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection="product")
@@ -30,8 +33,7 @@ public class Product {
 	@Size(max = 100)
 	private String productdesc;
 	
-	@NotBlank
-	@Size(max = 10)
+	
 	private double price;
 	
 	@NotBlank

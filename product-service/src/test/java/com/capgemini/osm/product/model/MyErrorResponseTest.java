@@ -4,21 +4,46 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
+
 
 class MyErrorResponseTest {
 
-	/*
-	 * MyErrorResponse myErrorResponse;
-	 * 
-	 * @Test void test() { fail("Not yet implemented"); }
-	 * 
-	 * @BeforeEach public void before() { myErrorResponse = new MyErrorResponse(18
-	 * ,HttpStatus.NOT_FOUND,"", null); }
-	 * 
-	 * @Test void getProducdByIdTest() { assertEquals(100, product.getId()); }
-	 * 
-	 * @Test void getProductNameTest() {
-	 * assertEquals("abc",product.getProductname()); }
-	 */
+	
+	
+
+	MyErrorResponse myErrorResponse;
+
+	@BeforeEach
+	public void before() {
+	myErrorResponse = new MyErrorResponse();
+		MyErrorResponse p = new MyErrorResponse();
+		p.setMessage("cannot convert from id int to long ");
+		p.setReason("Not Found");
+		p.setPrice(343.3);
+		p.setProductdesc("gsg");
+		p.setProductname("xyz");
+		p.getId();
+		p.getPhoto_path();
+		p.getPrice();
+		p.getProductdesc();
+		p.getProductname();
+		
+	}
+	
+	@Test
+	public void defaultConstructorTest()
+	{
+		MyErrorResponse dbs=new MyErrorResponse();
+		MyErrorResponse dbs1=new MyErrorResponse();
+		assertNotSame(dbs, dbs1);
+	}
+	Product product;
+	
+	
+		
+	@Test
+	void getProducdByIdTest() {
+		assertEquals(100, product.getId());
+	}
+
 }

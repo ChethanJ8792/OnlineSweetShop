@@ -121,7 +121,7 @@ class AdminProduct extends Component {
         
   <Card.Img variant="top" src={IMAGE6} />
   <Card.Body>
-    <Card.Title>Dry Fruit Burfi</Card.Title>
+    <Card.Title>Dry Fruit Barfi</Card.Title>
     <Card.Text>
    Barfi or burfi is a basic fudge from
     Indian cuisine that is made using full fat milk(condensing milk for several hours), sugar and ghee and dryfruits.

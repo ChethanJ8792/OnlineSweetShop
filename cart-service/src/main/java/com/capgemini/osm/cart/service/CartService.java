@@ -12,9 +12,6 @@ public interface CartService {
 	public Cart addCart(String token,Cart cart)  throws RecordAlreadyExistsException;
 	public Cart updateCart(String token,Cart cart)  throws CartNotFoundException;
 	public String cancelCart(String token,Long id) throws CartNotFoundException;
-	//public List<Product> findByIdProductId(Long id) throws  CartNotFoundException;
-	 //@GetMapping("/getproduct/{id}") // @GetMapping("/getproduct/{id}") 
-	 //public ResponseEntity<Product> getProductById(String token,Long id) throws ProductsNotFoundException;
-	  
+
 
 }

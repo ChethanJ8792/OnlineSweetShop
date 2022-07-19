@@ -4,7 +4,6 @@ import UserService from '../Services/UserService';
 
 const ListUserComponent= ()=> {
     const [users, setUsers] = useState([])        //to state into functional component
-  
     //To fetch data
  useEffect (()=>{ 
      UserService.getUsers().then((response)=>{

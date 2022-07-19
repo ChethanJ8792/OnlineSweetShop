@@ -61,7 +61,7 @@ const Home = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar><br />
-      <h4> Welcome {userdata.nm.username} ...!</h4>
+      <h4> Welcome {userdata.username} ...!</h4>{/**userdata.nm.username */}
 
       <img src={IMAGE9} alt="Nature" className="fluid"></img>
 

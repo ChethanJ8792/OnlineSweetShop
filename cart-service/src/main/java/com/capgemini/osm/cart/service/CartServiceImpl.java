@@ -1,6 +1,7 @@
 package com.capgemini.osm.cart.service;
 
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import com.capgemini.osm.cart.exception.RecordAlreadyExistsException;
 import com.capgemini.osm.cart.model.Cart;
 import com.capgemini.osm.cart.repository.CartRepo;
 import com.capgemini.osm.cart.util.AuthFeign;
-import com.capgemini.osm.cart.util.FeignClientUtilProduct2;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -27,10 +27,8 @@ public class CartServiceImpl implements CartService{
 	@Autowired
 	AuthFeign authfeign;
 	
-	@Autowired
-	FeignClientUtilProduct2 feignClientUtil;
 	
-	String msg ="InValid Credentials";
+
 	/**
 	 * @param token'
 	 * @return List<Cart>
@@ -81,8 +79,7 @@ public class CartServiceImpl implements CartService{
 		if(cartDeleted.isPresent())
 		{
 			cartrepo.deleteById(id);
-			log.debug("deleted succesfully {}",cartDeleted.get());
-			
+			log.debug("deleted succesfully {}",cartDeleted.get());		
 		}
 		else
 		{
@@ -95,22 +92,6 @@ public class CartServiceImpl implements CartService{
 	public Cart updateCart(String token,Cart cart) throws CartNotFoundException {
 		return null;
 	}
-
-//	@Override
-//	public ResponseEntity<Product> getProductById(String token, Long id) throws ProductsNotFoundException{
-//		log.info("get all products byId");
-//		ResponseEntity<Product> product = feignClientUtil.getProductById(token, id);
-//		return product;
-//	}
-	/*
-	 * @Override
-	public Product getProductById(String token,Long id) throws ProductNotFoundException {
-		Product product=productrepository.findById(id).orElseThrow(()-> new ProductNotFoundException("User Not Found with id "+id));
-		log.debug("the product deleted  is {}",product);
-		return product;
-		//getById id takes only id has input (it will not take object Product product)
-	}
-	 */
 
 
 }
