@@ -1,39 +1,136 @@
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Link, Router, BrowserRouter } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import AuthService from "./services/auth-service";
+import Login from "./components/Loign";
+import Register from "./components/Register";
+import Home from "./components/Home";
+import Profile from "./components/Profile";
+import BoardUser from "./components/BoardUser";
+import BoardModerator from "./components/BoardModerator";
+import BoardAdmin from "./components/BoardAdmin";
+import EventBus from "./common/EventBus";
+import AddProduct from "./components/AddProduct";
+import ProductHome from "./components/ProductHome";
 
-import './App.css';
-import HeaderComponent from './Components/HeaderComponent';
-import LoginComponent from './Components/LoginComponent';
-import Home from './Components/Home';
-import AdminHome from './Components/AdminHome';
-import AddUsers from './Components/AddUsers';
-import ListUserComponent from './Components/ListUserComponent';
-import ProductsComponent from './Components/ProductsComponent';
-import AdminProduct from './Components/AdminProduct';
-import {BrowserRouter as Router,Route,Switch } from 'react-router-dom';
-import FooterComponent from './Components/FooterComponent';
+const App = () => {
+  const [showModeratorBoard, setShowModeratorBoard] = useState(false);
+  const [showAdminBoard, setShowAdminBoard] = useState(false);
+  const [currentUser, setCurrentUser] = useState(undefined);
 
-function App() {
-  {
-    return (
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+
+    if (user) {
+      setCurrentUser(user);
+      setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
+      setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
+    }
+
+    EventBus.on("logout", () => {
+      logOut();
+    });
+
+    return () => {
+      EventBus.remove("logout");
+    };
+  }, []);
+
+  const logOut = () => {
+    AuthService.logout();
+    setShowModeratorBoard(false);
+    setShowAdminBoard(false);
+    setCurrentUser(undefined);
+  };
+
+  return (
+    <div>
+    <BrowserRouter>
+      <nav className="navbar navbar-expand navbar-dark bg-dark">
       
-        <Router>     
-          <div className='container'>
-            <HeaderComponent/>
-            <div className='container'>
-              <Switch>
-              <Route exact path="/"  component={LoginComponent}></Route>
-                <Route path="/home" component={Home}></Route>
-                <Route path="/adminhome" component={AdminHome}></Route>
-                <Route path="/Register"  component={AddUsers}></Route>
-                <Route  path="/list"  component={ListUserComponent}></Route>
-                <Route  path="/Products"  component={ProductsComponent}></Route>
-                <Route  path="/AdminProducts"  component={AdminProduct}></Route>
-                <Route ><LoginComponent/></Route>
-              </Switch>
-            </div>
-            <FooterComponent/>
+        <Link to={"/"} className="navbar-brand">
+          Online Sweet Shop
+        </Link>
+        <div className="navbar-nav mr-auto">
+          <li className="nav-item">
+            <Link to={"/home"} className="nav-link">
+              Home
+            </Link>
+          </li>
+
+          {showModeratorBoard && (
+            <li className="nav-item">
+              <Link to={"/mod"} className="nav-link">
+                Moderator Board
+              </Link>
+            </li>
+          )}
+
+          {showAdminBoard && (
+            <li className="nav-item">
+              <Link to={"/admin"} className="nav-link">
+                Admin Board
+              </Link>
+            </li>
+          )}
+
+          {currentUser && (
+            <li className="nav-item">
+              <Link to={"/user"} className="nav-link">
+                User
+              </Link>
+            </li>
+          )}
+        </div>
+
+        {currentUser ? (
+          <div className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <Link to={"/profile"} className="nav-link">
+                {currentUser.username}
+              </Link>
+            </li>
+            <li className="nav-item">
+              <a href="/login" className="nav-link" onClick={logOut}>
+                LogOut
+              </a>
+            </li>
           </div>
-        </Router>
-      
-    );
-  }
-}export default App;
+        ) : (
+          <div className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <Link to={"/login"} className="nav-link">
+                Login
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link to={"/register"} className="nav-link">
+                Sign Up
+              </Link>
+            </li>
+          </div>
+        )}
+      </nav>
+
+      <div className="container mt-3">
+        <Routes>
+          <Route path="/" element={<Home/>} />
+          <Route path="/home" element={<Home/>} />
+          <Route path="/login" element={<Login/>} />
+          <Route path="/register" element={<Register/>} />
+          <Route path="/profile" element={<Profile/>} />
+          <Route path="/user" element={<BoardUser/>} />
+          <Route path="/mod" element={<BoardModerator/>} />
+          <Route path="/admin" element={<BoardAdmin/>} />
+          {/* <Route path="/addproduct" element={<AddProduct/>}/>
+          <Route exact path="/producthome" element={<ProductHome/>}></Route> */}
+        </Routes>
+      </div>
+      </BrowserRouter>
+    </div>
+  );
+};
+
+export default App;
