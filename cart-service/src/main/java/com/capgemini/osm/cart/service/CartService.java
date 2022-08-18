@@ -7,11 +7,11 @@ import com.capgemini.osm.cart.exception.RecordAlreadyExistsException;
 import com.capgemini.osm.cart.model.Cart;
 
 public interface CartService {
-	
-	public List<Cart> showAllDataInCarts(String token) throws  CartNotFoundException,InValidTokenException;
-	public Cart addCart(String token,Cart cart)  throws RecordAlreadyExistsException;
-	public Cart updateCart(String token,Cart cart)  throws CartNotFoundException;
-	public String cancelCart(String token,Long id) throws CartNotFoundException;
+
+	public List<Cart> showAllDataInCarts() throws  CartNotFoundException,InValidTokenException;
+	public Cart addCart(Cart cart)  throws RecordAlreadyExistsException;
+	public Cart updateCart(Cart cart)  throws CartNotFoundException;
+	public String cancelCart(Long id) throws CartNotFoundException;
 
 
 }

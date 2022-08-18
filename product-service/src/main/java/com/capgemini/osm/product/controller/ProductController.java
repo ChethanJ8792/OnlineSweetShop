@@ -32,58 +32,58 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/product-service")
 @Slf4j
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "*")
 public class ProductController {
-	
+
 
 	//here also handle negative flow for every method
-	
+
 	@Autowired
 	private ProductServiceImpl productserviceimpl;
-	
+
 	@Autowired
 	private SequenceGeneratorService service;
 
-	
+
 	@GetMapping("/allproducts")  //users/admin
-	//include preAuthorize include here also  call preauthorize method here 
-	public ResponseEntity<List<Product>> getAllProducts(@RequestHeader("Authorization") String token) throws ProductsNotFoundException {
-		List<Product> product =productserviceimpl.getAllProducts(token);
+	//include preAuthorize include here also  call preauthorize method here
+	public ResponseEntity<List<Product>> getAllProducts() throws ProductsNotFoundException {
+		List<Product> product =productserviceimpl.getAllProducts();
 		if(product.size()>0)
 		{
 			log.debug("products are {}"+ product);
-		 return new  ResponseEntity<>(product,HttpStatus.OK); 
+		 return new  ResponseEntity<>(product,HttpStatus.OK);
 		}
 		return new  ResponseEntity<>(product,HttpStatus.NO_CONTENT);
 	}
-	
-	//admin/users 
-	  @GetMapping("/getproduct/{id}") 
-	  public ResponseEntity<Product> getProductById(@RequestHeader("Authorization")  String token,@Valid @PathVariable Long id) throws ProductNotFoundException {
-		 Product product= productserviceimpl.getProductById(token, id);
+
+	//admin/users
+	  @GetMapping("/getproduct/{id}")
+	  public ResponseEntity<Product> getProductById(@Valid @PathVariable Long id) throws ProductNotFoundException {
+		 Product product= productserviceimpl.getProductById(id);
 		 if(product!=null)
 		 {
 			 return ResponseEntity.ok().body(product);
 		 }
 		 else {
 				return new   ResponseEntity<Product>(product,HttpStatus.NOT_FOUND);
-			  }	  
+			  }
 	  }
-	 
+
 	@PostMapping("/addproduct")  //only admin
-	public ResponseEntity<Product> addProduct(@RequestHeader("Authorization")  String token,@RequestBody @Valid Product product) throws NoProperDataException {
+	public ResponseEntity<Product> addProduct(@RequestBody @Valid Product product) throws NoProperDataException {
 		product.setId(service.getSequenceNumberForProduct(Product.SEQUENCE_NAME));
-		 return new ResponseEntity<>(productserviceimpl.addProduct(token, product),HttpStatus.CREATED);
+		 return new ResponseEntity<>(productserviceimpl.addProduct(product),HttpStatus.CREATED);
 	}
 
-	@PutMapping("/updateproduct/{id}")  //admin only @PutMapping("/updateproduct/{id}") 
-	public ResponseEntity<Product> updateProduct(@RequestHeader("Authorization")  String token,@Valid @RequestBody Product product,@PathVariable Long id) throws ProductNotFoundException {
-		 return ResponseEntity.ok(productserviceimpl.updateProduct(token, product,id));
+	@PutMapping("/updateproduct/{id}")  //admin only @PutMapping("/updateproduct/{id}")
+	public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product,@PathVariable Long id) throws ProductNotFoundException {
+		 return ResponseEntity.ok(productserviceimpl.updateProduct(product,id));
 	}
 
 	@DeleteMapping("/deleteproduct/{id}")  //only delete
-	public ResponseEntity<String> deleteProduct(@RequestHeader("Authorization")  String token,@Valid @PathVariable Long id) throws ProductNotFoundException {
-		 productserviceimpl.deleteProduct(token, id);
+	public ResponseEntity<String> deleteProduct(@Valid @PathVariable Long id) throws ProductNotFoundException {
+		 productserviceimpl.deleteProduct(id);
 		 return ResponseEntity.ok(id+" deleted successfully");
 	}
 }

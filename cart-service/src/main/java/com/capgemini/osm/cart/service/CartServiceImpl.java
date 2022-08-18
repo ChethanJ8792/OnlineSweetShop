@@ -20,14 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class CartServiceImpl implements CartService{
-	
+
 	@Autowired
 	private CartRepo cartrepo;
 
 	@Autowired
 	AuthFeign authfeign;
-	
-	
+
+
 
 	/**
 	 * @param token'
@@ -37,9 +37,9 @@ public class CartServiceImpl implements CartService{
 	 * @throws InValidTokenException
 	 */
 	@Override //user/admin
-	public List<Cart> showAllDataInCarts(String token) throws CartNotFoundException, InValidTokenException {
-		
-		
+	public List<Cart> showAllDataInCarts() throws CartNotFoundException, InValidTokenException {
+
+
 			List<Cart> cartproducts =new ArrayList<>();
 			cartproducts =cartrepo.findAll();
 			log.debug("cart products from here {}",cartproducts);
@@ -52,11 +52,11 @@ public class CartServiceImpl implements CartService{
 				log.error(e.getMessage());
 			}
 		return cartproducts;
-		
+
 	}
 
 	@Override   //only user
-	public Cart addCart(String token,Cart cart) throws RecordAlreadyExistsException {
+	public Cart addCart(Cart cart) throws RecordAlreadyExistsException {
 		Cart bean=cartrepo.save(cart);
 		log.debug("the cart items are {}",bean);
 		try {
@@ -73,13 +73,13 @@ public class CartServiceImpl implements CartService{
 
 
 	@Override    //only user
-	public String cancelCart(String token,Long id) throws CartNotFoundException {
+	public String cancelCart(Long id) throws CartNotFoundException {
 		Optional<Cart> cartDeleted=cartrepo.findById(id);
 		log.debug("deleted succesfully {}",cartDeleted);
 		if(cartDeleted.isPresent())
 		{
 			cartrepo.deleteById(id);
-			log.debug("deleted succesfully {}",cartDeleted.get());		
+			log.debug("deleted succesfully {}",cartDeleted.get());
 		}
 		else
 		{
@@ -87,9 +87,9 @@ public class CartServiceImpl implements CartService{
 		}
 		return "Deleted";
 	}
-	
+
 	@Override
-	public Cart updateCart(String token,Cart cart) throws CartNotFoundException {
+	public Cart updateCart(Cart cart) throws CartNotFoundException {
 		return null;
 	}
 

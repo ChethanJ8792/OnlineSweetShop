@@ -18,10 +18,10 @@ public class ProductServiceImpl implements ProductService{
 	//changed in line 30
 	@Autowired
 	private ProductRepository productrepository;
-	
+
 	@Override   //=>user/admin
-	public List<Product> getAllProducts(String token) throws ProductsNotFoundException {
-		
+	public List<Product> getAllProducts() throws ProductsNotFoundException {
+
 		List<Product> products;
 		products=productrepository.findAll();
 		log.debug("the products are {}",products);//log messages should be here only
@@ -39,12 +39,12 @@ public class ProductServiceImpl implements ProductService{
 
 
 	@Override  //only admin  //make modification on duplicate values
-	public Product addProduct(String token, Product product) throws NoProperDataException {
-		
+	public Product addProduct(Product product) throws NoProperDataException {
+
 		Product bean=productrepository.save(product);
 		log.debug("Added Product is  {}",bean);//log messages should be here only after businnes is method
 		try {
-		if(bean.getProductname().isEmpty()||bean.getProductdesc().isEmpty()||bean.getPhoto_path().isEmpty()) 
+		if(bean.getProductname().isEmpty()||bean.getProductdesc().isEmpty()||bean.getPhoto_path().isEmpty())
 		{
 			throw new NoProperDataException(" Please fill all fields ");
 		}
@@ -55,8 +55,8 @@ public class ProductServiceImpl implements ProductService{
 		return bean;
 	}
 
-	@Override //admin only 
-	public Product updateProduct(String token,Product product, Long id) throws ProductNotFoundException {
+	@Override //admin only
+	public Product updateProduct(Product product, Long id) throws ProductNotFoundException {
 		Product product1=productrepository.findById(id).orElseThrow(()-> new  ProductNotFoundException("No Product Availble wth this id"));
 		log.debug("updated  product is {}",product1);
 		product1.setProductname(product.getProductname());
@@ -65,11 +65,11 @@ public class ProductServiceImpl implements ProductService{
 		product1.setPhoto_path(product.getPhoto_path());
 		return  productrepository.save(product1);
 		//return updatedProduct;
-		
+
 	}
-	
+
 	@Override //only admin
-	public String deleteProduct(String token,Long  id) throws ProductNotFoundException {
+	public String deleteProduct(Long  id) throws ProductNotFoundException {
 		Optional<Product> product = productrepository.findById(id);
 		log.debug("the product is {}",product);
 		if(product.isPresent())
@@ -83,10 +83,10 @@ public class ProductServiceImpl implements ProductService{
 		}
 		log.info("end");
 		return "deleted";
-				
+
 	}
 	@Override
-	public Product getProductById(String token,Long id) throws ProductNotFoundException {
+	public Product getProductById(Long id) throws ProductNotFoundException {
 		Product product=productrepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product Not Found with id "+id));
 		log.debug("the product deleted  is {}",product);
 		return product;

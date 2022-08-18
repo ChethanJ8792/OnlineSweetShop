@@ -31,65 +31,65 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/cart-service")
 @Slf4j
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "*")
 public class CartController{
 
-	
+
 	@Autowired
 	private CartServiceImpl cartserviceimpl;
-	
+
 	@Autowired
 	private SequenceGeneratorService service;
-	
-	
+
+
 //	@Autowired
 //	FeignClientUtilProduct2 feignClientUtil;
 
 	  //user /admin
 	@GetMapping("/cartdata")
-	public ResponseEntity<List<Cart>> showAllDataInCarts( @RequestHeader("Authorization")String token) throws CartNotFoundException ,InValidTokenException {
+	public ResponseEntity<List<Cart>> showAllDataInCarts() throws CartNotFoundException ,InValidTokenException {
 		//include exception unauthorized also
-		List<Cart> cart=cartserviceimpl.showAllDataInCarts(token);
+		List<Cart> cart=cartserviceimpl.showAllDataInCarts();
 		log.info("starting  of get mapping");
 		if(cart.size()>0)
 		{
-			return new  ResponseEntity<>(cartserviceimpl.showAllDataInCarts(token),HttpStatus.OK);
+			return new  ResponseEntity<>(cartserviceimpl.showAllDataInCarts(),HttpStatus.OK);
 		}
 		else
 		{
 			log.debug("Cart is empty {}",cart);
-			return new  ResponseEntity<>(cart,HttpStatus.NO_CONTENT); 
+			return new  ResponseEntity<>(cart,HttpStatus.NO_CONTENT);
 		}
 	}
-	
+
 	 //only user
 	@PostMapping("/addtocart")  //this data should come from products
-	public ResponseEntity<Cart> addCart(@RequestHeader("Authorization")String token, @RequestBody Cart cart ) throws RecordAlreadyExistsException, NoProperDataException {
+	public ResponseEntity<Cart> addCart( @RequestBody Cart cart ) throws RecordAlreadyExistsException, NoProperDataException {
 		if(cart!=null)
 		{
 			cart.setId(service.getSequenceNumberForCart(Cart.SEQUENCE_NAME));
-			cartserviceimpl.addCart(token, cart);
+			cartserviceimpl.addCart(cart);
 			log.info(" Added to cart ");
 			return new ResponseEntity<>(cart,HttpStatus.CREATED);
 		}
 		else
 		{
 			throw new NoProperDataException("Please fill all the fields");
-		} 
+		}
 	}
 
   //don't include update cart
 	@PutMapping("/updatecart")
-	public ResponseEntity<Cart> updateCart(@RequestHeader("Authorization")String token, Cart cart) throws CartNotFoundException {
+	public ResponseEntity<Cart> updateCart(Cart cart) throws CartNotFoundException {
 		return null;
 	}
-	
+
 	  //delete cart -> only user
 	@DeleteMapping("/cancelcart/{id}")
-	public ResponseEntity<String> cancelCart(@RequestHeader("Authorization")String token,@Valid @PathVariable Long id) throws CartNotFoundException {
-		cartserviceimpl.cancelCart(token, id);
+	public ResponseEntity<String> cancelCart(@Valid @PathVariable Long id) throws CartNotFoundException {
+		cartserviceimpl.cancelCart(id);
 		log.error("Delete operation performed");
 		return ResponseEntity.ok(id+" Deleted Succesfully ");
 	}
-	
+
 }
